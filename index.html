@@ -17,7 +17,6 @@
     function showMessage(message) {
       messages.textContent += `\n\n${message}`;
       messages.scrollTop = messages.scrollHeight;
-      messageBox.value = '';
     }
 
     function init() {
@@ -57,6 +56,7 @@
 
       ws.send(messageBox.value);
       showMessage(messageBox.value);
+      messageBox.value = '';
     }
 
     init();
