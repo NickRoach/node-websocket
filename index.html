@@ -1,64 +1,72 @@
 <head></head>
 <body>
-<h1>Real Time Messaging</h1>
-<pre id="messages" style="height: 400px; overflow: scroll"></pre>
-<input type="text" id="messageBox" placeholder="Type your message here" style="display: block; width: 100%; margin-bottom: 10px; padding: 10px;" />
-<button id="send" title="Send Message!" style="width: 100%; height: 30px;">Send Message</button>
+    <h1>Real Time Messaging</h1>
+    <pre id="messages" style="height: 400px; overflow: scroll"></pre>
+    <input
+        type="text"
+        id="messageBox"
+        placeholder="Type your message here"
+        style="display: block; width: 100%; margin-bottom: 10px; padding: 10px"
+    />
+    <button id="send" title="Send Message!" style="width: 100%; height: 30px">
+        Send Message
+    </button>
 </body>
 
 <script>
-  (function() {
-    const sendBtn = document.querySelector('#send');
-    const messages = document.querySelector('#messages');
-    const messageBox = document.querySelector('#messageBox');
+    (function () {
+        const sendBtn = document.querySelector("#send");
+        const messages = document.querySelector("#messages");
+        const messageBox = document.querySelector("#messageBox");
 
-    let ws;
+        let ws;
 
-    function showMessage(message) {
-      messages.textContent += `\n\n${message}`;
-      messages.scrollTop = messages.scrollHeight;
-    }
+        function showMessage(message) {
+            messages.textContent += `\n\n${message}`;
+            messages.scrollTop = messages.scrollHeight;
+        }
 
-    function init() {
-      if (ws) {
-        ws.onerror = ws.onopen = ws.onclose = null;
-        ws.close();
-      }
+        function init() {
+            if (ws) {
+                ws.onerror = ws.onopen = ws.onclose = null;
+                ws.close();
+            }
 
-      // ws = new WebSocket('ws://localhost:6969');
-      ws = new WebSocket('wss://node-websocket-server-j2bcdgtj5a-ts.a.run.app');
+            // ws = new WebSocket('ws://localhost:6969');
+            ws = new WebSocket(
+                "wss://node-websocket-server-j2bcdgtj5a-ts.a.run.app"
+            );
 
-      ws.onopen = () => {
-        console.log('Connection opened!');
-      }
-      ws.onmessage = ({ data }) => {
-        const reader = new FileReader();
+            ws.onopen = () => {
+                console.log("Connection opened!");
+            };
 
-        reader.addEventListener('loadend', (e) => {
-        const text = e.srcElement.result;
-        showMessage(text);
-        
-      });
-      reader.readAsText(data);
-        
-        
-  }
-      ws.onclose = function() {
-        ws = null;
-      }
-    }
+            ws.onmessage = ({ data }) => {
+                const reader = new FileReader();
 
-    sendBtn.onclick = function() {
-      if (!ws) {
-        showMessage("No WebSocket connection :(");
-        return ;
-      }
+                reader.addEventListener("loadend", (e) => {
+                    const text = e.srcElement.result;
+                    showMessage(text);
+                });
+                reader.readAsText(data);
+            };
 
-      ws.send(messageBox.value);
-      showMessage(messageBox.value);
-      messageBox.value = '';
-    }
+            ws.onclose = function () {
+                ws = null;
+            };
+        }
 
-    init();
-  })();
+        sendBtn.onclick = function () {
+            if (!ws) {
+                showMessage("No WebSocket connection :(");
+                return;
+            }
+
+            ws.send(messageBox.value);
+            showMessage(messageBox.value);
+            messageBox.value = "";
+        };
+
+        init();
+    })();
 </script>
